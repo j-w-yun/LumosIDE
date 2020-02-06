@@ -1,0 +1,74 @@
+extends layout
+
+block stylesheets
+    link(rel='stylesheet' href='/stylesheets/ide/main.css')
+    link(rel='stylesheet' href='/stylesheets/ide/menu.css')
+    link(rel='stylesheet' href='/stylesheets/ide/status.css')
+    link(rel='stylesheet' href='/stylesheets/ide/chat.css')
+
+    style.
+        .editor_container {
+            flex: 1 auto;
+            position: relative;
+        }
+        .editor {
+            border-color: #4c4e57;
+            border-width: 0 1px 1px 1px;
+            border-style: solid;
+            position: absolute;
+            margin: 0;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            left: 0;
+        }
+        .toolbar_item {
+            --length: 30px;
+            width: var(--length);
+            height: var(--length);
+            line-height: var(--length);
+            margin: 0 auto;
+            text-align: center;
+            font-weight: bold;
+        }
+
+block scripts
+    script(src='/javascripts/ide/main.js')
+    script(src='/javascripts/ide/menu.js')
+    script(src='/javascripts/ide/status.js')
+    script(src='/javascripts/ide/chat.js')
+    script(src='/javascripts/ace/src-noconflict/ace.js')
+    script(src='/javascripts/ace/src-noconflict/ext-language_tools.js')
+
+block content
+    div#main_container
+
+        // Menu bar
+        include ide/menu
+
+        // Core
+        div#ide_container
+            div#left_toolbar
+                div.toolbar_item.no_text_select.box(data-target='#left_panel' data-drag_bar='#drag_bar1') FS
+            div#left_panel(style='display: none;')
+                div.no_text_select(style='height: 40px; padding: 10px;') FILE SYSTEM
+
+            div#drag_bar1.vertical_drag_bar(data-left='#left_panel' data-right='#center_panel' style='display: none;')
+
+            div#center_panel
+                div(style='display: flex; flex-direction: row;')
+                    div#editor_container1.editor_container
+                        pre#editor1.editor
+                    div.vertical_drag_bar(data-left='#editor_container1' data-right='#editor_container2')
+                    div#editor_container2.editor_container
+                        pre#editor2.editor
+
+            div#drag_bar2.vertical_drag_bar(data-left='#center_panel' data-right='#right_panel' style='display: none;')
+
+            div#right_panel(style='display: none;')
+                include ide/chat
+            div#right_toolbar
+                div.toolbar_item.no_text_select.box(data-target='#right_panel' data-drag_bar='#drag_bar2') GC
+
+        // Status bar
+        include ide/status

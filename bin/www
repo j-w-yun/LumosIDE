@@ -1,0 +1,83 @@
+#!/usr/bin/env node
+
+/**
+ * Module dependencies.
+ */
+
+let app = require('../app');
+let debug = require('debug')('silky:server');
+let http = require('http');
+let socket_io = require('../sockets/socket');
+
+/**
+ * Get port from environment and store in Express.
+ */
+
+let http_port = normalizePort(process.env.PORT || '3000');
+app.set('port', http_port);
+
+/**
+ * Create server.
+ */
+
+let http_server = http.createServer(app);
+socket_io.createServer(http_server);
+
+/**
+ * Listen on provided port, on all network interfaces.
+ */
+
+http_server.listen(http_port);
+http_server.on('error', on_error);
+http_server.on('listening', on_listening);
+
+/**
+ * Normalize a port into a number, string, or false.
+ */
+
+function normalizePort(val) {
+	let port = parseInt(val, 10);
+	if (isNaN(port))
+		return val;
+	if (port >= 0)
+		return port;
+	return false;
+}
+
+/**
+ * Event listener for HTTP server "error" event.
+ */
+
+function on_error(error) {
+	if (error.syscall !== 'listen')
+		throw error;
+
+	let bind = typeof http_port === 'string'
+		? 'Pipe ' + http_port
+		: 'Port ' + http_port;
+
+	switch (error.code) {
+		case 'EACCES':
+			console.error(bind + ' requires elevated privileges');
+			process.exit(1);
+			break;
+		case 'EADDRINUSE':
+			console.error(bind + ' is already in use');
+			process.exit(1);
+			break;
+		default:
+			throw error;
+	}
+}
+
+/**
+ * Event listener for HTTP server "listening" event.
+ */
+
+function on_listening() {
+	let addr = http_server.address();
+	let bind = typeof addr === 'string'
+		? 'pipe ' + addr
+		: 'port ' + addr.port;
+	debug('Listening on ' + bind);
+}
