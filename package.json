@@ -16,6 +16,6 @@
     "express-session": "latest"
   },
   "devDependencies": {
-    "socket.io": "^2.3.0"
+    "socket.io": "^2.5.0"
   }
 }
